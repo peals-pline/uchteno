@@ -19,7 +19,11 @@
   --r:18px;
   --ease:cubic-bezier(.22,1,.36,1);
   --pop:cubic-bezier(.34,1.56,.64,1);
+  /* Нижний системный отступ. В Telegram env() его не знает — мессенджер
+     отдаёт свой инсет отдельной переменной, поэтому значение одно на всех. */
+  --safe-bot:env(safe-area-inset-bottom,0px);
 }
+html.in-tg{--safe-bot:var(--tg-safe-area-inset-bottom,env(safe-area-inset-bottom,0px))}
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
@@ -173,7 +177,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* ============ FAB ============ */
 .fab{
-  position:absolute;left:50%;bottom:86px;transform:translateX(-50%);
+  position:absolute;left:50%;bottom:calc(96px + var(--safe-bot));transform:translateX(-50%);
   width:64px;height:64px;border-radius:50%;
   background:var(--ink);color:var(--paper);
   display:grid;place-items:center;
@@ -188,7 +192,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .tabbar{
   position:absolute;left:0;right:0;bottom:0;z-index:4;
   display:flex;justify-content:space-around;
-  padding:10px 30px calc(14px + env(safe-area-inset-bottom));
+  padding:10px 30px calc(14px + var(--safe-bot));
   background:color-mix(in srgb,var(--paper) 92%,transparent);
   backdrop-filter:blur(12px);
   border-top:1px solid var(--line);
@@ -256,7 +260,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .numpad button:active{transform:scale(.93);background:var(--line)}
 
 .commit{
-  margin:10px 22px calc(20px + env(safe-area-inset-bottom));
+  margin:10px 22px calc(20px + var(--safe-bot));
   height:58px;border-radius:18px;
   background:var(--stamp-deep);color:#FFFFFF;font-weight:800;font-size:18px;letter-spacing:.5px;
   transition:transform .2s var(--pop),background .2s,opacity .2s;
@@ -358,7 +362,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @keyframes fade-in{from{opacity:0}}
 .sheet{
   width:100%;background:var(--paper);border-radius:24px 24px 0 0;
-  padding:10px 22px calc(22px + env(safe-area-inset-bottom));
+  padding:10px 22px calc(22px + var(--safe-bot));
   animation:sheet-up .35s var(--ease);
   max-height:78%;overflow-y:auto;
 }
@@ -537,8 +541,6 @@ html.in-tg .phone{
 /* На новых клиентах контент может уходить под системные элементы —
    у Telegram свои инсеты, env() их не знает. */
 html.in-tg .app-head,html.in-tg .log-head{padding-top:calc(26px + var(--tg-content-safe-area-inset-top,0px))}
-html.in-tg .tabbar{padding-bottom:calc(14px + var(--tg-safe-area-inset-bottom,env(safe-area-inset-bottom)))}
-html.in-tg .commit{margin-bottom:calc(20px + var(--tg-safe-area-inset-bottom,env(safe-area-inset-bottom)))}
 @media (min-width:520px){
   html.in-tg .phone{height:var(--tg-viewport-stable-height,100dvh);border-radius:0}
 }
