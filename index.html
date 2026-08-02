@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FAF6EE">
+<title>Учтено — траты за 4 секунды</title>
+<meta name="description" content="Учтено — учёт трат без чувства вины. Запись за 4 секунды, честный стрик, никаких нотаций.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23FAF6EE'/%3E%3Ccircle cx='32' cy='32' r='21' fill='none' stroke='%23D6482F' stroke-width='4'/%3E%3Cpath d='M23 32l6 6 12-12' fill='none' stroke='%23D6482F' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="css/app.css">
+<meta property="og:title" content="Учтено — траты за 4 секунды">
+<meta property="og:description" content="Учёт трат без чувства вины. Запись за 4 секунды, честный стрик, никаких нотаций.">
+<meta property="og:type" content="website">
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+<div class="phone">
+
+  <!-- ЭКРАН: СЕГОДНЯ (лента) -->
+  <main class="screen scr-today active" data-screen="today">
+    <header class="app-head">
+      <div>
+        <div class="head-date" id="head-date">сегодня</div>
+        <div class="head-total"><span id="today-total">0</span> <span class="rub">₽</span></div>
+      </div>
+      <div class="limit-line" id="limit-line" hidden></div>
+      <button class="streak-chip" id="streak-chip" aria-label="Серия дней">
+        <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M6 3h12v7a6 6 0 0 1-12 0V3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 21h6M12 16v5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <b id="streak-num">0</b>
+      </button>
+    </header>
+
+    <div class="tape-wrap" id="tape-wrap">
+      <div class="tape" id="tape">
+        <div class="tape-head">
+          <div class="tape-logo">УЧТЕНО</div>
+          <div class="tape-sub">лента дня · касса открыта</div>
+          <div class="tape-dash" aria-hidden="true"></div>
+        </div>
+        <div id="catchup-slot"></div>
+        <ul class="tape-list" id="tape-list"></ul>
+        <div class="tape-empty" id="tape-empty">
+          <svg viewBox="0 0 120 90" width="110" aria-hidden="true">
+            <rect x="22" y="8" width="76" height="64" rx="6" fill="none" stroke="#C9BCA2" stroke-width="2.4"/>
+            <path d="M22 72l7 8 7-8 7 8 7-8 7 8 7-8 7 8 7-8 7 8 7-8" fill="none" stroke="#C9BCA2" stroke-width="2.4" stroke-linejoin="round"/>
+            <path d="M34 26h36M34 38h52M34 50h44" stroke="#C9BCA2" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="2 6"/>
+          </svg>
+          <p>пока ни одной траты.<br>день чистый — так и запишем</p>
+        </div>
+        <div class="tape-foot" aria-hidden="true">
+          <div class="tape-dash"></div>
+          <div class="tape-sub" id="tape-foot-line">итого за день выше · спасибо, что честно</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="fab" id="fab" aria-label="Записать трату">
+      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+    </button>
+
+    <nav class="tabbar" aria-label="Разделы">
+      <button class="tab active" data-go="today" aria-label="Сегодня">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 3h14v16l-2.4-2-2.3 2-2.3-2-2.3 2-2.3-2L5 19V3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 8h6M9 12h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>лента</span>
+      </button>
+      <button class="tab" data-go="stats" aria-label="Итоги">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 20h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 20v-6M12 20V9M17 20v-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <span>итоги</span>
+      </button>
+      <button class="tab" data-go="settings" aria-label="Ещё">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="6" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="18" r="1.6" fill="currentColor"/></svg>
+        <span>ещё</span>
+      </button>
+    </nav>
+  </main>
+
+  <!-- ЭКРАН: БЫСТРАЯ ЗАПИСЬ -->
+  <section class="screen scr-log" data-screen="log" aria-label="Запись траты">
+    <header class="log-head">
+      <button class="icon-btn" id="log-close" aria-label="Закрыть">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+      <span class="log-title">новая трата</span>
+      <span style="width:40px"></span>
+    </header>
+
+    <div class="amount-zone">
+      <div class="amount" id="amount-view" aria-live="polite">0<span class="rub"> ₽</span></div>
+      <div class="amount-hint" id="amount-hint">сколько потратили?</div>
+    </div>
+
+    <div class="cats" id="cats" role="group" aria-label="Категория"></div>
+
+    <div class="numpad" id="numpad">
+      <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+      <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+      <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+      <button data-k="00">00</button><button data-k="0">0</button>
+      <button data-k="del" aria-label="Стереть">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M8 5h11a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H8l-5-7 5-7z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M11 9.5l5 5M16 9.5l-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <button class="commit" id="commit" disabled>Учтено</button>
+  </section>
+
+  <!-- ЭКРАН: ИТОГИ (наполняет stats.js) -->
+  <section class="screen scr-stats" data-screen="stats" aria-label="Итоги">
+    <header class="app-head"><div class="head-date">итоги</div></header>
+    <div id="stats-mount" class="stats-mount"></div>
+    <nav class="tabbar" aria-label="Разделы">
+      <button class="tab" data-go="today"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 3h14v16l-2.4-2-2.3 2-2.3-2-2.3 2-2.3-2L5 19V3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 8h6M9 12h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>лента</span></button>
+      <button class="tab active" data-go="stats"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 20h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 20v-6M12 20V9M17 20v-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>итоги</span></button>
+      <button class="tab" data-go="settings"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="6" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="18" r="1.6" fill="currentColor"/></svg><span>ещё</span></button>
+    </nav>
+  </section>
+
+  <!-- ЭКРАН: ЕЩЁ -->
+  <section class="screen scr-settings" data-screen="settings" aria-label="Ещё">
+    <header class="app-head"><div class="head-date">ещё</div></header>
+    <div class="settings-body">
+      <div class="set-card">
+        <b>Учтено</b>
+        <p class="set-note">учёт трат без чувства вины.<br>запись за 4 секунды, честный стрик, никаких нотаций.</p>
+      </div>
+      <button class="set-row" id="set-limit">
+        <span><span class="ru">Дневной потолок</span></span>
+        <span class="set-k" id="limit-val">не задан</span>
+      </button>
+      <button class="set-row" id="set-cats">
+        <span>Категории</span>
+        <span class="set-k">свои и скрытые</span>
+      </button>
+      <button class="set-row" id="set-export">
+        <span>Выгрузить в CSV</span>
+        <span class="set-k">для таблиц</span>
+      </button>
+      <button class="set-row" id="demo-fill">
+        <span>Наполнить демо-данными</span>
+        <span class="set-k">для витрины</span>
+      </button>
+      <button class="set-row danger" id="wipe">
+        <span>Стереть все данные</span>
+        <span class="set-k">навсегда</span>
+      </button>
+      <p class="set-note center">версия 1.0 · данные живут только на этом устройстве</p>
+    </div>
+    <nav class="tabbar" aria-label="Разделы">
+      <button class="tab" data-go="today"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M5 3h14v16l-2.4-2-2.3 2-2.3-2-2.3 2-2.3-2L5 19V3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M9 8h6M9 12h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>лента</span></button>
+      <button class="tab" data-go="stats"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M4 20h16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M7 20v-6M12 20V9M17 20v-9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>итоги</span></button>
+      <button class="tab active" data-go="settings"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="6" r="1.6" fill="currentColor"/><circle cx="12" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="18" r="1.6" fill="currentColor"/></svg><span>ещё</span></button>
+    </nav>
+  </section>
+
+  <!-- ЭКРАН: КАТЕГОРИИ -->
+  <section class="screen scr-cats" data-screen="cats" aria-label="Категории">
+    <header class="log-head">
+      <button class="icon-btn" data-go="settings" aria-label="Назад">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M14 6l-6 6 6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+      </button>
+      <span class="log-title">категории</span>
+      <span style="width:40px"></span>
+    </header>
+    <div class="cats-manage" id="cats-manage"></div>
+    <button class="commit ghost" id="add-cat">добавить свою</button>
+  </section>
+
+  <!-- ОНБОРДИНГ -->
+  <section class="screen scr-onb" data-screen="onb" aria-label="Знакомство">
+    <div class="onb-slides" id="onb-slides">
+      <div class="onb-slide active">
+        <div class="onb-art"><div class="onb-stamp">УЧТЕНО</div></div>
+        <h2>Трата — за 4 секунды</h2>
+        <p>сумма, категория, штамп. без анкет,<br>простыней и графиков-укоров.</p>
+      </div>
+      <div class="onb-slide">
+        <div class="onb-art">
+          <svg viewBox="0 0 120 80" width="120" aria-hidden="true"><path d="M10 40h28l6-24 12 48 10-36 6 12h38" fill="none" stroke="#26221B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M10 64h100" stroke="#E3D9C6" stroke-width="2" stroke-dasharray="2 6"/></svg>
+        </div>
+        <h2>Серия — это честность</h2>
+        <p>пропустили день? лента порвётся.<br>заклеим скотчем — примерная сумма<br>лучше, чем брошенный учёт.</p>
+      </div>
+      <div class="onb-slide">
+        <div class="onb-art">
+          <svg viewBox="0 0 120 80" width="120" aria-hidden="true"><path d="M14 20h92" stroke="#D6482F" stroke-width="3" stroke-linecap="round" stroke-dasharray="8 6"/><rect x="30" y="34" width="60" height="34" rx="4" fill="none" stroke="#26221B" stroke-width="3"/><path d="M40 46h24M40 56h32" stroke="#26221B" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="2 5"/></svg>
+        </div>
+        <h2>Потолок без нотаций</h2>
+        <p>задайте дневной потолок — скажем,<br>когда близко. пробили? бывает.<br>завтра новый чек.</p>
+      </div>
+    </div>
+    <div class="onb-dots" id="onb-dots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
+    <button class="commit" id="onb-next">дальше</button>
+  </section>
+
+  <!-- ШТОРКА (детали записи / формы) -->
+  <div class="sheet-layer" id="sheet-layer" hidden>
+    <div class="sheet" role="dialog" aria-modal="true" id="sheet">
+      <div class="sheet-grip" aria-hidden="true"></div>
+      <div id="sheet-body"></div>
+    </div>
+  </div>
+
+  <!-- ТОСТ -->
+  <div class="app-toast" id="app-toast" role="status" hidden>
+    <span id="toast-text"></span>
+    <button id="toast-act" hidden></button>
+  </div>
+
+  <!-- ШТАМП -->
+  <div class="stamp-layer" id="stamp-layer" aria-hidden="true">
+    <div class="stamp" id="stamp">УЧТЕНО ✓</div>
+  </div>
+
+</div>
+<script src="js/tg.js"></script>
+<script src="js/app.js"></script>
+<script src="js/stats.js"></script>
+</body>
+</html>
