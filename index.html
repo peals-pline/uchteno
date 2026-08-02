@@ -46,7 +46,9 @@
         <div class="tape-empty" id="tape-empty">
           <svg viewBox="0 0 120 90" width="110" aria-hidden="true">
             <rect x="22" y="8" width="76" height="64" rx="6" fill="none" stroke="#C9BCA2" stroke-width="2.4"/>
-            <path d="M22 72l7 8 7-8 7 8 7-8 7 8 7-8 7 8 7-8 7 8 7-8" fill="none" stroke="#C9BCA2" stroke-width="2.4" stroke-linejoin="round"/>
+            <!-- Шаг 7.6: десять отрезков дают ровно 76 — ширину прямоугольника выше.
+                 При шаге 7 ряд обрывался на 6 единиц раньше правого края. -->
+            <path d="M22 72l7.6 8 7.6-8 7.6 8 7.6-8 7.6 8 7.6-8 7.6 8 7.6-8 7.6 8 7.6-8" fill="none" stroke="#C9BCA2" stroke-width="2.4" stroke-linejoin="round"/>
             <path d="M34 26h36M34 38h52M34 50h44" stroke="#C9BCA2" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="2 6"/>
           </svg>
           <p>пока ни одной траты.<br>день чистый — так и запишем</p>
