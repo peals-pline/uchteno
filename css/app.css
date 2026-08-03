@@ -198,6 +198,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   border-top:1px solid var(--line);
 }
 .tab{
+  /* Равные доли, а не space-around: при разной ширине вкладок середина
+     уезжает на половину разницы крайних, и «итоги» переставали совпадать
+     с кнопкой записи. */
+  flex:1 1 0;
   display:flex;flex-direction:column;align-items:center;gap:3px;
   color:var(--muted);font-family:var(--mono);font-size:10.5px;
   padding:4px 10px;transition:color .2s;
