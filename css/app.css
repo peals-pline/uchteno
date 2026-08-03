@@ -57,6 +57,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
   position:absolute;inset:0;display:none;flex-direction:column;
   background:var(--paper);
 }
+/* Крайний случай: экран ниже минимума — лучше прокрутка, чем обрезка. */
+.scr-log{overflow-y:auto;scrollbar-width:none}
+.scr-log::-webkit-scrollbar{display:none}
 .screen.active{display:flex}
 .screen.slide-in{animation:scr-in .38s var(--ease)}
 @keyframes scr-in{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
@@ -231,7 +234,11 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @keyframes amt-pop{50%{transform:scale(1.04)}}
 .amount-hint{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:2px;min-height:16px}
 
+/* flex:none обязателен: без него на низком окне (Telegram на компьютере,
+   старые айфоны) флекс отбирал высоту именно у категорий — чип сжимался
+   с 83px до 32px, иконка и подпись становились нечитаемыми. */
 .cats{
+  flex:none;
   display:flex;gap:9px;overflow-x:auto;padding:16px 18px 6px;
   scrollbar-width:none;
 }
@@ -251,12 +258,16 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .cat.sel{border-color:var(--ink);background:var(--paper-deep)}
 .cat.top{border-style:dashed}
 
+/* Ряды тянутся между 38 и 60 пикселями: клавиатура сама подстраивается под
+   остаток высоты. Единицы вьюпорта тут не годятся — на компьютере телефон
+   нарисован карточкой, и её высота не равна высоте окна. */
 .numpad{
-  flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;
-  padding:14px 26px 8px;align-content:end;
+  flex:1;min-height:0;display:grid;
+  grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(4,minmax(38px,60px));
+  gap:6px;padding:14px 26px 8px;align-content:end;
 }
 .numpad button{
-  height:60px;border-radius:16px;font-family:var(--mono);font-size:24px;font-weight:500;
+  border-radius:16px;font-family:var(--mono);font-size:24px;font-weight:500;
   display:grid;place-items:center;
   transition:background .15s,transform .12s;
 }
@@ -264,6 +275,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .numpad button:active{transform:scale(.93);background:var(--line)}
 
 .commit{
+  flex:none;
   margin:10px 22px calc(20px + var(--safe-bot));
   height:58px;border-radius:18px;
   background:var(--stamp-deep);color:#FFFFFF;font-weight:800;font-size:18px;letter-spacing:.5px;
